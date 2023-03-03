@@ -1,0 +1,5 @@
+1. Rule: 1 widget per file.(Rare violations)
+2. Final vs const:
+    final -> Once set is never changed. During compliation and development is unclear
+    final is runtime constant value;
+    const -> is compiletime constant

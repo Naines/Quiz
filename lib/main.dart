@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quiz/widgets/answer.dart';
+import './widgets/question.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,24 +16,28 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   var _quesIndex = 0;
-  var questions = [
-    'What is your favorite color?',
-    'What is your favorite animal?',
-  ];
 
   void _answerQuestion() {
     setState(() {
-      _quesIndex = (++_quesIndex) % questions.length;
+      _quesIndex = ++_quesIndex;
     });
-    print('Answer Chosen');
     print(_quesIndex);
-    print(questions[_quesIndex]);
+    // print(questions[_quesIndex]);
   }
 
   @override
   Widget build(BuildContext context) {
+    const questions = [
+      {
+        'questionText': 'What is your favorite color?',
+        'answers': ['Black', 'White', 'Red', 'Green'],
+      },
+      {
+        'questionText': 'What is your favorite animal and why is it dog?',
+        'answers': ['Dog', 'Cat', 'Rat', 'Lion'],
+      },
+    ];
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -43,21 +49,24 @@ class _MyAppState extends State<MyApp> {
           // mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
-            Text(questions.elementAt(_quesIndex)),
-            ElevatedButton(
-              onPressed: _answerQuestion,
-              child: Text('answer 1'),
-            ),
-            ElevatedButton(
-              onPressed: _answerQuestion,
-              child: Text('answer 2'),
-            ),
-            ElevatedButton(
-              onPressed: () => {
-                print('answer 3 chosen'),
-              },
-              child: Text('answer 3'),
-            ),
+            Question(questions[_quesIndex]['questionText'].toString()),
+            ...(questions[_quesIndex]['answers'] as List).map((answer) {
+              return Answer(_answerQuestion, answer);
+            }).toList()
+
+            //Spread operator -> ... => take a list and pull all values
+            //in that list out and add them to surreounding list as individual values
+
+            /**Old Code: 
+             ElevatedButton(
+               onPressed: _answerQuestion,
+               child: Text('answer 1'),
+             ),
+            */
+            //this is called state uplifting
+            // Answer(_answerQuestion),
+            // Answer(_answerQuestion),
+            // Answer(_answerQuestion),
           ],
         ),
       ),
