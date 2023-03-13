@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:quiz/widgets/answer.dart';
-import './widgets/question.dart';
+import 'package:quiz/widgets/result.dart';
+// import 'package:quiz/widgets/answer.dart';
+// import './widgets/question.dart';
+import './widgets/quiz.dart'; //2 levels of state uplifting
 
 void main() {
   runApp(MyApp());
@@ -17,8 +19,27 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var _quesIndex = 0;
+  final _questions = const [
+    {
+      'questionText': 'What is your favorite color?',
+      'answers': ['Black', 'White', 'Red', 'Green'],
+    },
+    {
+      'questionText': 'What is your favorite animal and why is it dog?',
+      'answers': ['Dog', 'Cat', 'Rat', 'Lion'],
+    },
+    {
+      'questionText': 'What\'s is your favourite hobby?',
+      'answers': ['Books', 'Code', 'Memes', 'Sleep'],
+    }
+  ];
 
   void _answerQuestion() {
+    if (_quesIndex < _questions.length) {
+      print('We have more questions!');
+    } else {
+      print('No more questions');
+    }
     setState(() {
       _quesIndex = ++_quesIndex;
     });
@@ -28,47 +49,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    const questions = [
-      {
-        'questionText': 'What is your favorite color?',
-        'answers': ['Black', 'White', 'Red', 'Green'],
-      },
-      {
-        'questionText': 'What is your favorite animal and why is it dog?',
-        'answers': ['Dog', 'Cat', 'Rat', 'Lion'],
-      },
-    ];
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: Text('My App'),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          // mainAxisAlignment: MainAxisAlignment.center,
-
-          children: [
-            Question(questions[_quesIndex]['questionText'].toString()),
-            ...(questions[_quesIndex]['answers'] as List).map((answer) {
-              return Answer(_answerQuestion, answer);
-            }).toList()
-
-            //Spread operator -> ... => take a list and pull all values
-            //in that list out and add them to surreounding list as individual values
-
-            /**Old Code: 
-             ElevatedButton(
-               onPressed: _answerQuestion,
-               child: Text('answer 1'),
-             ),
-            */
-            //this is called state uplifting
-            // Answer(_answerQuestion),
-            // Answer(_answerQuestion),
-            // Answer(_answerQuestion),
-          ],
-        ),
+        body: _quesIndex < _questions.length
+            ? Quiz(
+                answerQuestion: _answerQuestion,
+                questions: _questions,
+                quesIndex: _quesIndex)
+            : Result(),
       ),
     );
   }
