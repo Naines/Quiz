@@ -5,12 +5,9 @@ import './answer.dart';
 class Quiz extends StatelessWidget {
   final List<Map<String, Object>> questions;
   final int quesIndex;
-  final VoidCallback answerQuestion;
+  final Function? answerQuestion;
 
-  Quiz(
-      {required this.answerQuestion,
-      required this.questions,
-      required this.quesIndex});
+  Quiz({required this.answerQuestion, required this.questions, required this.quesIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -19,24 +16,17 @@ class Quiz extends StatelessWidget {
       // mainAxisAlignment: MainAxisAlignment.center,
 
       children: [
-        Question(questions[quesIndex]['questionText'].toString()),
-        ...(questions[quesIndex]['answers'] as List).map((answer) {
-          return Answer(answerQuestion, answer);
+        Question(
+          questions[quesIndex]['questionText'] as String,
+        ),
+        ...(questions[quesIndex]['answers'] as List<Map<String, Object>>)
+            .map((answer) {
+          return Answer(() => answerQuestion!(answer['score']),
+              answer['text'] as String);
         }).toList()
 
         //Spread operator -> ... => take a list and pull all values
         //in that list out and add them to surreounding list as individual values
-
-        /**Old Code: 
-             ElevatedButton(
-               onPressed: _answerQuestion,
-               child: Text('answer 1'),
-             ),
-            */
-        //this is called state uplifting
-        // Answer(_answerQuestion),
-        // Answer(_answerQuestion),
-        // Answer(_answerQuestion),
       ],
     );
   }
